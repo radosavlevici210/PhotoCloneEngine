@@ -1,5 +1,11 @@
-import { createRoot } from "react-dom/client";
-import App from "./App";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App.tsx";
 import "./index.css";
 
-createRoot(document.getElementById("root")!).render(<App />);
+// Add performance monitoring in development
+if (process.env.NODE_ENV === 'development') {
+  import('react-dom/profiling').then(() => {
+    console.log('React profiling enabled');
+  });
+}

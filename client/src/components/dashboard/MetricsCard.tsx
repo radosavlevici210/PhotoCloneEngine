@@ -1,3 +1,4 @@
+import React from "react";
 import { LucideIcon } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -11,7 +12,7 @@ interface MetricsCardProps {
   changeType: 'positive' | 'negative' | 'neutral';
 }
 
-export default function MetricsCard({
+const MetricsCard = React.memo(function MetricsCard({
   title,
   value,
   change,
@@ -45,4 +46,6 @@ export default function MetricsCard({
       </CardContent>
     </Card>
   );
-}
+});
+
+export default MetricsCard;

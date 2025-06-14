@@ -54,5 +54,5 @@ class ErrorBoundaryComponent extends Component<Props, State> {
   }
 }
 
-export { ErrorBoundaryComponent as ErrorBoundary };
-export default ErrorBoundaryComponent;
+export { ErrorBoundaryComponent as ErrorBoundary }
+export default ErrorBoundaryComponent

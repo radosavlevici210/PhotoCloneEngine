@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Atom, Zap, Activity, TrendingUp } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function QuantumAnalysis() {
@@ -32,7 +32,7 @@ export default function QuantumAnalysis() {
 
     setRunningAlgorithms(prev => [...prev, algorithmId]);
     setAlgorithmProgress(prev => ({ ...prev, [algorithmId]: 0 }));
-    
+
     toast({
       title: "Algorithm Started",
       description: `${algorithmName} execution initiated`,
@@ -66,6 +66,16 @@ export default function QuantumAnalysis() {
     }
   };
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      toast({
+        title: "Quantum Analysis Initialized", 
+        description: "Advanced quantum computing algorithms are now active.",
+      });
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <Layout title="Quantum Analysis" subtitle="Advanced quantum computing algorithms">
       <div className="space-y-6">
@@ -78,7 +88,7 @@ export default function QuantumAnalysis() {
               <Badge variant="secondary" className="bg-green-600 text-white">Coherent</Badge>
             </CardContent>
           </Card>
-          
+
           <Card className="dark-100 border-gray-700">
             <CardContent className="p-6 text-center">
               <Zap size={32} className="text-purple-400 mx-auto mb-3" />
@@ -86,7 +96,7 @@ export default function QuantumAnalysis() {
               <p className="text-gray-400">128 Active</p>
             </CardContent>
           </Card>
-          
+
           <Card className="dark-100 border-gray-700">
             <CardContent className="p-6 text-center">
               <Activity size={32} className="text-green-400 mx-auto mb-3" />
@@ -135,7 +145,7 @@ export default function QuantumAnalysis() {
               {algorithms.map(algorithm => {
                 const isRunning = runningAlgorithms.includes(algorithm.id);
                 const isCompleted = completedAlgorithms.includes(algorithm.id);
-                
+
                 return (
                   <div key={algorithm.id} className="p-4 bg-gray-800 rounded-lg">
                     <div className="flex justify-between items-start mb-2">

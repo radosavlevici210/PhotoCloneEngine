@@ -5,7 +5,7 @@ import SystemHealth from '@/components/dashboard/SystemHealth';
 import RecentActivity from '@/components/dashboard/RecentActivity';
 import QuickActions from '@/components/dashboard/QuickActions';
 import { useMetrics, useSystemHealth, useActivities } from '@/hooks/useMetrics';
-import { Skeleton } from '@/components/ui/skeleton';
+import { PageLoader } from '@/components/ui/loading-spinner';
 
 export default function Dashboard() {
   const { data: metrics, isLoading: metricsLoading } = useMetrics();
@@ -15,17 +15,7 @@ export default function Dashboard() {
   if (metricsLoading || systemHealthLoading || activitiesLoading) {
     return (
       <Layout>
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[...Array(4)].map((_, i) => (
-              <Skeleton key={i} className="h-32 dark-100" />
-            ))}
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Skeleton className="h-64 dark-100" />
-            <Skeleton className="h-64 dark-100" />
-          </div>
-        </div>
+        <PageLoader />
       </Layout>
     );
   }

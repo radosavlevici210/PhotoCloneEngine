@@ -9,3 +9,10 @@ if (process.env.NODE_ENV === 'development') {
     console.log('React profiling enabled');
   });
 }
+
+const root = ReactDOM.createRoot(document.getElementById("root")!);
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);

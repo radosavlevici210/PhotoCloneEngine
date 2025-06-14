@@ -130,7 +130,7 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="w-64 dark-300 border-r border-gray-700 flex flex-col">
+    <div className="w-64 dark-300 border-r border-gray-700 flex flex-col min-h-screen">
       {/* Header */}
       <div className="p-6 border-b border-gray-700">
         <div className="flex items-center space-x-3">

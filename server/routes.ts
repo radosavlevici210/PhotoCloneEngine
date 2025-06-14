@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { DashboardMetrics, SystemHealth, ActivityItem } from "@shared/types";
+import { DashboardMetrics, SystemHealth, ActivityItem } from "../client/src/types/dashboard";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Dashboard metrics endpoint

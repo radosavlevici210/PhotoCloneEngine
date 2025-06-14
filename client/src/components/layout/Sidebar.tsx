@@ -115,8 +115,8 @@ export default function Sidebar() {
 
     return (
       <Link key={item.id} href={item.path}>
-        <a
-          className={`flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+        <div
+          className={`flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
             isActive
               ? 'bg-blue-600 text-white'
               : 'text-gray-300 hover:bg-gray-700 hover:text-white'
@@ -124,7 +124,7 @@ export default function Sidebar() {
         >
           <IconComponent size={16} />
           <span>{item.label}</span>
-        </a>
+        </div>
       </Link>
     );
   };

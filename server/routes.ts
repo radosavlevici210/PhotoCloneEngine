@@ -4,6 +4,30 @@ import { storage } from "./storage";
 import { DashboardMetrics, SystemHealth, ActivityItem } from "../client/src/types/dashboard";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Health check endpoint for production monitoring
+  app.get("/api/health", async (req, res) => {
+    try {
+      // Check database connectivity
+      const users = await storage.getUser(1);
+      
+      res.json({
+        status: "healthy",
+        timestamp: new Date().toISOString(),
+        version: process.env.npm_package_version || "1.0.0",
+        database: "connected",
+        memory: process.memoryUsage(),
+        uptime: process.uptime(),
+        environment: process.env.NODE_ENV || "development"
+      });
+    } catch (error) {
+      res.status(503).json({
+        status: "unhealthy",
+        timestamp: new Date().toISOString(),
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
   // Dashboard metrics endpoint
   app.get("/api/metrics", async (req, res) => {
     try {
@@ -15,7 +39,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
       res.json(metrics);
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch metrics" });
+      res.status(500).json({ 
+        error: "Failed to fetch metrics",
+        timestamp: new Date().toISOString()
+      });
     }
   });
 
@@ -30,7 +57,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
       res.json(systemHealth);
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch system health" });
+      res.status(500).json({ 
+        error: "Failed to fetch system health",
+        timestamp: new Date().toISOString()
+      });
     }
   });
 

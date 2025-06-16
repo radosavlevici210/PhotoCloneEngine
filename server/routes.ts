@@ -28,6 +28,115 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // AI/ML Training endpoints
+  app.post("/api/training/start", async (req, res) => {
+    try {
+      const { modelName, modelType, parameters } = req.body;
+      
+      if (!modelName || !modelType) {
+        return res.status(400).json({
+          error: "Model name and type are required",
+          timestamp: new Date().toISOString()
+        });
+      }
+
+      // Simulate training job creation
+      const trainingJob = {
+        id: Date.now().toString(),
+        modelName,
+        modelType,
+        parameters,
+        status: "running",
+        progress: 0,
+        startTime: new Date().toISOString()
+      };
+
+      res.json({
+        success: true,
+        trainingJob,
+        message: `Training started for ${modelName}`
+      });
+    } catch (error) {
+      res.status(500).json({
+        error: "Failed to start training",
+        timestamp: new Date().toISOString()
+      });
+    }
+  });
+
+  app.post("/api/algorithms/execute", async (req, res) => {
+    try {
+      const { algorithmId, parameters } = req.body;
+      
+      if (!algorithmId) {
+        return res.status(400).json({
+          error: "Algorithm ID is required",
+          timestamp: new Date().toISOString()
+        });
+      }
+
+      // Simulate algorithm execution
+      const execution = {
+        id: Date.now().toString(),
+        algorithmId,
+        parameters,
+        status: "running",
+        progress: 0,
+        startTime: new Date().toISOString()
+      };
+
+      res.json({
+        success: true,
+        execution,
+        message: `Algorithm ${algorithmId} execution started`
+      });
+    } catch (error) {
+      res.status(500).json({
+        error: "Failed to execute algorithm",
+        timestamp: new Date().toISOString()
+      });
+    }
+  });
+
+  app.get("/api/models", async (req, res) => {
+    try {
+      // Simulate model listing
+      const models = [
+        {
+          id: "1",
+          name: "PhotoClone ResNet-50",
+          type: "classification",
+          status: "trained",
+          accuracy: 94.7,
+          lastTrained: "2025-06-16T07:00:00Z"
+        },
+        {
+          id: "2", 
+          name: "BERT Sentiment Analysis",
+          type: "nlp",
+          status: "training",
+          accuracy: 89.2,
+          lastTrained: "2025-06-16T06:30:00Z"
+        },
+        {
+          id: "3",
+          name: "Neural Style Transfer",
+          type: "generation",
+          status: "deployed",
+          accuracy: 92.1,
+          lastTrained: "2025-06-16T05:45:00Z"
+        }
+      ];
+
+      res.json(models);
+    } catch (error) {
+      res.status(500).json({
+        error: "Failed to fetch models",
+        timestamp: new Date().toISOString()
+      });
+    }
+  });
+
   // Dashboard metrics endpoint
   app.get("/api/metrics", async (req, res) => {
     try {
@@ -94,11 +203,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
           timestamp: "1 hour ago",
           icon: "chart",
           iconColor: "bg-purple-600"
+        },
+        {
+          id: "4",
+          type: "success",
+          title: "Enterprise migration completed",
+          description: "PhotoClone AI Dashboard ready for production",
+          timestamp: "just now",
+          icon: "check-circle",
+          iconColor: "bg-emerald-600"
         }
       ];
       res.json(activities);
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch activities" });
+      res.status(500).json({ 
+        error: "Failed to fetch activities",
+        timestamp: new Date().toISOString()
+      });
     }
   });
 

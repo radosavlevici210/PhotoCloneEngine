@@ -17,7 +17,7 @@ export default function TrainModel() {
   const [showAdvanced, setShowAdvanced] = useState(false);
   const { toast } = useToast();
 
-  const handleStartTraining = () => {
+  const handleStartTraining = async () => {
     if (!modelName || !modelType) {
       toast({
         title: "Validation Error",
@@ -27,27 +27,60 @@ export default function TrainModel() {
       return;
     }
 
-    setIsTraining(true);
-    toast({
-      title: "Training Started",
-      description: `${modelName} training has been initiated`,
-    });
-
-    // Simulate training progress
-    const interval = setInterval(() => {
-      setTrainingProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setIsTraining(false);
-          toast({
-            title: "Training Complete",
-            description: `${modelName} training completed successfully`,
-          });
-          return 100;
-        }
-        return prev + 1;
+    try {
+      setIsTraining(true);
+      
+      // Call backend API to start training
+      const response = await fetch('/api/training/start', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          modelName,
+          modelType,
+          parameters: {
+            learningRate: 0.001,
+            batchSize: 32,
+            epochs: 100
+          }
+        }),
       });
-    }, 1000);
+
+      const result = await response.json();
+
+      if (result.success) {
+        toast({
+          title: "Training Started",
+          description: `${modelName} training has been initiated`,
+        });
+
+        // Simulate training progress
+        const interval = setInterval(() => {
+          setTrainingProgress(prev => {
+            if (prev >= 100) {
+              clearInterval(interval);
+              setIsTraining(false);
+              toast({
+                title: "Training Complete",
+                description: `${modelName} training completed successfully`,
+              });
+              return 100;
+            }
+            return prev + Math.random() * 3;
+          });
+        }, 2000);
+      } else {
+        throw new Error(result.error || 'Training failed');
+      }
+    } catch (error) {
+      setIsTraining(false);
+      toast({
+        title: "Training Failed",
+        description: error instanceof Error ? error.message : "Failed to start training",
+        variant: "destructive",
+      });
+    }
   };
 
   const handlePauseTraining = () => {

@@ -20,7 +20,7 @@ export default function QuantumAnalysis() {
     { id: 'qaoa', name: "QAOA", description: 'Optimization problems', complexity: 'High' },
   ];
 
-  const executeAlgorithm = (algorithmId: string, algorithmName: string) => {
+  const executeAlgorithm = async (algorithmId: string, algorithmName: string) => {
     if (runningAlgorithms.includes(algorithmId)) {
       toast({
         title: "Algorithm Running",
@@ -30,31 +30,61 @@ export default function QuantumAnalysis() {
       return;
     }
 
-    setRunningAlgorithms(prev => [...prev, algorithmId]);
-    setAlgorithmProgress(prev => ({ ...prev, [algorithmId]: 0 }));
-
-    toast({
-      title: "Algorithm Started",
-      description: `${algorithmName} execution initiated`,
-    });
-
-    // Simulate algorithm execution
-    const interval = setInterval(() => {
-      setAlgorithmProgress(prev => {
-        const currentProgress = prev[algorithmId] || 0;
-        if (currentProgress >= 100) {
-          clearInterval(interval);
-          setRunningAlgorithms(current => current.filter(id => id !== algorithmId));
-          setCompletedAlgorithms(current => [...current, algorithmId]);
-          toast({
-            title: "Algorithm Complete",
-            description: `${algorithmName} executed successfully`,
-          });
-          return prev;
-        }
-        return { ...prev, [algorithmId]: currentProgress + Math.random() * 10 };
+    try {
+      // Call backend API to execute algorithm
+      const response = await fetch('/api/algorithms/execute', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          algorithmId,
+          parameters: {
+            qubits: 8,
+            shots: 1024,
+            optimization_level: 3
+          }
+        }),
       });
-    }, 500);
+
+      const result = await response.json();
+
+      if (result.success) {
+        setRunningAlgorithms(prev => [...prev, algorithmId]);
+        setAlgorithmProgress(prev => ({ ...prev, [algorithmId]: 0 }));
+
+        toast({
+          title: "Algorithm Started",
+          description: `${algorithmName} execution initiated`,
+        });
+
+        // Simulate algorithm execution with realistic timing
+        const interval = setInterval(() => {
+          setAlgorithmProgress(prev => {
+            const currentProgress = prev[algorithmId] || 0;
+            if (currentProgress >= 100) {
+              clearInterval(interval);
+              setRunningAlgorithms(current => current.filter(id => id !== algorithmId));
+              setCompletedAlgorithms(current => [...current, algorithmId]);
+              toast({
+                title: "Algorithm Complete",
+                description: `${algorithmName} executed successfully`,
+              });
+              return prev;
+            }
+            return { ...prev, [algorithmId]: currentProgress + Math.random() * 10 };
+          });
+        }, 500);
+      } else {
+        throw new Error(result.error || 'Algorithm execution failed');
+      }
+    } catch (error) {
+      toast({
+        title: "Execution Failed",
+        description: error instanceof Error ? error.message : "Failed to execute algorithm",
+        variant: "destructive",
+      });
+    }
   };
 
   const getComplexityColor = (complexity: string) => {
